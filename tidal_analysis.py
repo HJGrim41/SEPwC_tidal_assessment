@@ -9,7 +9,23 @@ import math
 from scipy import stats
 import matplotlib.dates as mdates
 import argparse
+import contextlib
+from pathlib import Path
 
+
+
+def read_dovertidal_data(filename):
+    folder_path = Path("./data/dover/")
+    for file_path in folder_path.glob("*.txt"):
+        print(f"{file_path.name}")
+        with open(file_path, 'r') as f:
+            print(f.read())
+    return 
+
+
+def read_tidal_data(filename):
+
+    return
 
 def read_tidal_data(filename):
 
