@@ -14,21 +14,26 @@ from pathlib import Path
 
 
 #perform the analysis by the user suppying the folder
-def read_tidal_data(dover):
-    input_file = Path("./data/dover/")
+def read_tidal_data(filename):
+    input_file = Path("./data/"+filename+"/")
     for input_file in input_file.glob("*.txt"):
         print(f"{input_file.name}")
         with open (input_file, 'r'):
-            output_file = Path("./data/dovcleaned/")
+            output_file = Path("./data/datacleaned/")
             output_file.mkdir(parents=True, exist_ok=True)
-            doverdata = pd.read_csv(input_file, sep='\s+', skiprows=11, names=['Cycle', 'Date', 'Time', 'Surface Elevation', 'Residual'])
-            #Removing the Cycle column
-            doverdata['Cycle'] = doverdata['Cycle'].str.replace(')', '', regex=False).astype(int)
+            tidaldata = pd.read_csv(input_file, sep='\s+', skiprows=11, names=['Cycle', 'Date', 'Time', 'Surface Elevation', 'Residual'])
+            #Removing the ')' in the cycle column
+            tidaldata['Cycle'] = tidaldata['Cycle'].str.replace(')', '', regex=False).astype(int)
             #Combining Date & Time collumns and setting it as a datetime
-            doverdata['Timestamp'] = pd.to_datetime(doverdata['Date'] + ' ' + doverdata['Time'])
-            print(doverdata)
-    return doverdata
+            tidaldata['Timestamp'] = pd.to_datetime(tidaldata['Date'] + ' ' + tidaldata['Time'])
+    return tidaldata
 
+filename = input("Please choose a file between Whitby, Dover or Aberdeen:")
+filename = filename.lower()
+while filename != "whitby" and filename != "dover" and filename != "aberdeen":
+    print ("Make sure you have typed your file of choice in correctly")
+    filename = input("Please choose a file between Whitby, Dover or Aberdeen:")
+    filename = filename.lower()
 
 def extract_single_year_remove_mean(year, data):
 
