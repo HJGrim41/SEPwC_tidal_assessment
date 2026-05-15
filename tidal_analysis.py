@@ -12,31 +12,46 @@ import argparse
 import contextlib
 from pathlib import Path
 
-
-#perform the analysis by the user suppying the folder
 def read_tidal_data(filename):
     input_file = Path("./data/"+filename+"/")
+    tidal_data = {} # dict to store the various years
     for input_file in input_file.glob("*.txt"):
         print(f"{input_file.name}")
+        year_key = input_file.name[:4]
         with open (input_file, 'r'):
             output_file = Path("./data/datacleaned/")
             output_file.mkdir(parents=True, exist_ok=True)
-            tidaldata = pd.read_csv(input_file, sep='\s+', skiprows=11, names=['Cycle', 'Date', 'Time', 'Surface Elevation', 'Residual'])
-            #Removing the ')' in the cycle column
-            tidaldata['Cycle'] = tidaldata['Cycle'].str.replace(')', '', regex=False).astype(int)
+            partial_data = pd.read_csv(input_file, sep='\s+', skiprows=11, names=['Cycle', 'Date', 'Time', 'Surface Elevation', 'Residual'])
+            partial_data['Cycle'] = partial_data['Cycle'].str.replace(')', '', regex=False).astype(int)
             #Combining Date & Time collumns and setting it as a datetime
-            tidaldata['Timestamp'] = pd.to_datetime(tidaldata['Date'] + ' ' + tidaldata['Time'])
-    return tidaldata
+            #Better to store as a datetime
+            partial_data['Timestamp'] = pd.to_datetime(partial_data['Date'] + ' ' + partial_data['Time'])
+        tidal_data[year_key] = partial_data
+    return tidal_data
 
-filename = input("Please choose a file between Whitby, Dover or Aberdeen:")
+#Could give the user more choice
+    #change the loop so it looks for a file matching the file names available
+    #Rather than looking for a file matching the given file names
+    #Gives the user more flexibility to add more files of data ..
+        #Additionally list the folders available tbh
+filename = input("Please choose a file between Whitby, Dover or Aberdeen:") 
 filename = filename.lower()
 while filename != "whitby" and filename != "dover" and filename != "aberdeen":
     print ("Make sure you have typed your file of choice in correctly")
     filename = input("Please choose a file between Whitby, Dover or Aberdeen:")
     filename = filename.lower()
+#Making sure the data is differentiated
+if filename == "dover":
+    dover_data = read_tidal_data("dover")
+elif filename == "aberdeen":
+    aberdeen_data = read_tidal_data("aberdeen")
+elif filename == "whitby":
+    whitby_data = read_tidal_data("whitby")
+else:
+    print ("There was an error!! Please check your input was correct and restart the program!")
 
 def extract_single_year_remove_mean(year, data):
-
+    
     return 
 
 
