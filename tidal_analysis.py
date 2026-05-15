@@ -3,18 +3,36 @@ import pandas as pd
 import datetime
 import os
 import numpy as np
+#uptide can calculate the tidal constuents, but any nan (i.e missing data) must be removed prior to working out tidal constiuents.ArithmeticError
+#uptide doesnt work - to fix!!
 import uptide
 import pytz
 import math
+#The `scipy.stats' module can do the linear regression to work out sea-level rise. You may find it easier to work out the rise per day and multiply by 365 to get metres per year.
 from scipy import stats
 import matplotlib.dates as mdates
 import argparse
 import contextlib
 from pathlib import Path
 
+#Important to note:
+    #If you alter any function names in the main code, 
+        #you can alter the name in the test file to match; 
+        #however the rest of the test must remain unchanged. 
+        #This will be checked.
+    #If you wish to add more tests, please do, 
+        #but place them in a separate file in the test 
+        #directory. Remember to name the file 
+        #test_something.py. You must also make sure the 
+        #class name(s) are different to those in 
+        #test/test_tides.py.
+    #You can also add extra functionality, but the 
+        #command-line interface must pass the tests set
+
+#%%
+tidal_data_temp = {} # dict to store the various years
 def read_tidal_data(filename):
     input_file = Path("./data/"+filename+"/")
-    tidal_data = {} # dict to store the various years
     for input_file in input_file.glob("*.txt"):
         print(f"{input_file.name}")
         year_key = input_file.name[:4]
@@ -26,8 +44,8 @@ def read_tidal_data(filename):
             #Combining Date & Time collumns and setting it as a datetime
             #Better to store as a datetime
             partial_data['Timestamp'] = pd.to_datetime(partial_data['Date'] + ' ' + partial_data['Time'])
-        tidal_data[year_key] = partial_data
-    return tidal_data
+        tidal_data_temp[year_key] = partial_data
+    return tidal_data_temp
 
 #Could give the user more choice
     #change the loop so it looks for a file matching the file names available
@@ -42,18 +60,25 @@ while filename != "whitby" and filename != "dover" and filename != "aberdeen":
     filename = filename.lower()
 #Making sure the data is differentiated
 if filename == "dover":
-    dover_data = read_tidal_data("dover")
+    tidal_data = read_tidal_data("dover")
 elif filename == "aberdeen":
-    aberdeen_data = read_tidal_data("aberdeen")
+    tidal_data = read_tidal_data("aberdeen")
 elif filename == "whitby":
-    whitby_data = read_tidal_data("whitby")
+    tidal_data = read_tidal_data("whitby")
 else:
     print ("There was an error!! Please check your input was correct and restart the program!")
-
+#%%
+#%%
 def extract_single_year_remove_mean(year, data):
-    
+    #Extract a single year
+    #Remove the mean..?!
+    year = np.empty(0)
+    year[tidal_data[year_select]]
     return 
-
+year_select = int(input("Select which year you would like to extract:"))
+while year_select != tidal_data.loc[Timestamp[year_select]]:
+    year_select = input("That's not a valid year, please try again:")
+#%%
 
 def extract_section_remove_mean(start, end, data):
 
