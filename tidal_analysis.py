@@ -13,24 +13,23 @@ import contextlib
 from pathlib import Path
 
 
+#perform the analysis by the user suppying the folder
+def read_tidal_data(dover):
+    input_file = Path("./data/dover/")
+    for input_file in input_file.glob("*.txt"):
+        print(f"{input_file.name}")
+        with open (input_file, 'r'):
+            output_file = Path("./data/dovcleaned/")
+            output_file.mkdir(parents=True, exist_ok=True)
+            doverdata = pd.read_csv(input_file, sep='\s+', skiprows=11, names=['Cycle', 'Date', 'Time', 'Surface Elevation', 'Residual'])
+            #Removing the Cycle column
+            doverdata['Cycle'] = doverdata['Cycle'].str.replace(')', '', regex=False).astype(int)
+            #Combining Date & Time collumns and setting it as a datetime
+            doverdata['Timestamp'] = pd.to_datetime(doverdata['Date'] + ' ' + doverdata['Time'])
+            print(doverdata)
+    return doverdata
 
-def read_dovertidal_data(filename):
-    folder_path = Path("./data/dover/")
-    for file_path in folder_path.glob("*.txt"):
-        print(f"{file_path.name}")
-        with open(file_path, 'r') as f:
-            print(f.read())
-    return 
 
-
-def read_tidal_data(filename):
-
-    return
-
-def read_tidal_data(filename):
-
-    return
-    
 def extract_single_year_remove_mean(year, data):
 
     return 
